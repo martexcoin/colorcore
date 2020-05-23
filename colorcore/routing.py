@@ -88,7 +88,7 @@ class Configuration():
             self.rpc_enabled = False
 
     def create_blockchain_provider(self, loop):
-        if self.blockchain_provider in ['chain.com', 'chain.com+bitcoind']:
+        if self.blockchain_provider in ['chain.com', 'chain.com+martexcoind']:
             # Chain.com API provider
             base_url = self.parser['chain.com']['base-url']
             api_key = self.parser['chain.com']['api-key-id']
@@ -97,14 +97,14 @@ class Configuration():
             if self.blockchain_provider == 'chain.com':
                 return colorcore.providers.ChainApiProvider(base_url, api_key, api_secret, None, loop)
             else:
-                # Chain.com for querying transactions combined with Bitcoind for signing
-                rpc_url = self.parser['bitcoind']['rpcurl']
+                # Chain.com for querying transactions combined with martexd for signing
+                rpc_url = self.parser['martexcoind']['rpcurl']
                 fallback = colorcore.providers.BitcoinCoreProvider(rpc_url)
 
                 return colorcore.providers.ChainApiProvider(base_url, api_key, api_secret, fallback, loop)
         else:
             # Bitcoin Core provider
-            rpc_url = self.parser['bitcoind']['rpcurl']
+            rpc_url = self.parser['martexcoind']['rpcurl']
             return colorcore.providers.BitcoinCoreProvider(rpc_url)
 
 

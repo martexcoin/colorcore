@@ -24,7 +24,7 @@ Clone the source code from GitHub::
 Update the requirements::
 
     $ cd colorcore
-    $ pip install --upgrade -r requirements.txt
+    $ pip install -r requirements.txt
 
 Configuration
 =============

@@ -161,12 +161,12 @@ class ConfigurationTests(unittest.TestCase):
         self.assertIsInstance(result, colorcore.providers.ChainApiProvider)
         self.assertIsNone(result._fallback_provider)
 
-        # chain.com + Bitcoind
+        # chain.com + martexd
         configuration = colorcore.routing.Configuration(None)
-        configuration.blockchain_provider = 'chain.com+bitcoind'
+        configuration.blockchain_provider = 'chain.com+martexcoind'
         configuration.parser = {
             'chain.com': {'base-url': '1', 'api-key-id': '2', 'secret': '3'},
-            'bitcoind': {'rpcurl': 'url'}
+            'martexcoind': {'rpcurl': 'url'}
         }
 
         result = configuration.create_blockchain_provider(None)
@@ -174,10 +174,10 @@ class ConfigurationTests(unittest.TestCase):
         self.assertIsInstance(result, colorcore.providers.ChainApiProvider)
         self.assertIsNotNone(result._fallback_provider)
 
-        # Bitcoind
+        # martexd
         configuration = colorcore.routing.Configuration(None)
-        configuration.blockchain_provider = 'bitcoind'
-        configuration.parser = {'bitcoind': {'rpcurl': 'url'}}
+        configuration.blockchain_provider = 'martexcoind'
+        configuration.parser = {'martexcoind': {'rpcurl': 'url'}}
 
         result = configuration.create_blockchain_provider(None)
 
