@@ -69,7 +69,7 @@ The currently supported commands are the following:
 
 * **getbalance**: Returns the balance in both martexcoin and colored coin assets for all of the addresses available in your martexcoin Core wallet.
 * **listunspent**: Returns an array of unspent transaction outputs, augmented with the asset ID and quantity of each output.
-* **sendbitcoin**: Creates a transaction for sending martexcoins from an address to another.
+* **sendmartexcoin**: Creates a transaction for sending martexcoins from an address to another.
 * **sendasset**: Creates a transaction for sending an asset from an address to another.
 * **issueasset**: Creates a transaction for issuing an asset.
 * **distribute**: Creates a batch of transactions used for creating a token and distributing it to participants of a crowd sale.
@@ -120,7 +120,7 @@ Remarks
 
 Fees can be specified through the ``--fees`` argument, and the default amount for fees can be changed through the ``config.ini`` file.
 
-Once you have colored coins on one address, make sure you use the ``sendbitcoin`` operation to send uncolored martexcoins from that address. If you use Martexcoin Core to send martexcoins, Martexcoin Core might spend your colored outputs as it is not aware of colored coins.
+Once you have colored coins on one address, make sure you use the ``sendmartexcoin`` operation to send uncolored martexcoins from that address. If you use Martexcoin Core to send martexcoins, Martexcoin Core might spend your colored outputs as it is not aware of colored coins.
 
 If RPC is enabled, it is highly recommended to use a firewall to prevent access to Colorcore from an unauthorized remote machine.
 

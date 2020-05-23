@@ -140,7 +140,7 @@ class Controller(object):
         return table
 
     @asyncio.coroutine
-    def sendbitcoin(self,
+    def sendmartexcoin(self,
         address: "The address to send the bitcoins from",
         amount: "The amount of satoshis to send",
         to: "The address to send the bitcoins to",

@@ -201,11 +201,11 @@ class ControllerTests(unittest.TestCase):
             ],
             result)
 
-    # sendbitcoin
+    # sendmartexcoin
 
     @helpers.async_test
-    def test_sendbitcoin_success(self, *args, loop):
-        result = yield from self._setup_sendbitcoin_test('unsigned', 'json', loop)
+    def test_sendmartexcoin_success(self, *args, loop):
+        result = yield from self._setup_sendmartexcoin_test('unsigned', 'json', loop)
 
         self.assert_response({
             'version': 1,
@@ -224,37 +224,37 @@ class ControllerTests(unittest.TestCase):
         result)
 
     @helpers.async_test
-    def test_sendbitcoin_signed_success(self, *args, loop):
+    def test_sendmartexcoin_signed_success(self, *args, loop):
         self.loop = loop
         self.set_sign_transaction_mock(True)
-        result = yield from self._setup_sendbitcoin_test('signed', 'json', loop)
+        result = yield from self._setup_sendmartexcoin_test('signed', 'json', loop)
 
         self.assertEqual(1, self.provider.sign_transaction.call_count)
         self.assertEqual(2, len(result['vin']))
         self.assertEqual(2, len(result['vout']))
 
     @helpers.async_test
-    def test_sendbitcoin_signed_invalid_signature(self, *args, loop):
+    def test_sendmartexcoin_signed_invalid_signature(self, *args, loop):
         self.set_sign_transaction_mock(False)
 
         yield from helpers.assert_coroutine_raises(
-            self, colorcore.routing.ControllerError, self._setup_sendbitcoin_test, 'signed', 'json', loop)
+            self, colorcore.routing.ControllerError, self._setup_sendmartexcoin_test, 'signed', 'json', loop)
         self.assertEqual(1, self.provider.sign_transaction.call_count)
 
     @helpers.async_test
-    def test_sendbitcoin_broadcast(self, *args, loop):
+    def test_sendmartexcoin_broadcast(self, *args, loop):
         self.loop = loop
         self.set_sign_transaction_mock(True)
         self.set_send_transaction_mock(b'transaction ID')
-        result = yield from self._setup_sendbitcoin_test('broadcast', 'json', loop)
+        result = yield from self._setup_sendmartexcoin_test('broadcast', 'json', loop)
 
         self.assertEqual(1, self.provider.sign_transaction.call_count)
         self.assertEqual(1, self.provider.send_transaction.call_count)
         self.assertEqual(bitcoin.core.b2lx(b'transaction ID'), result)
 
     @helpers.async_test
-    def test_sendbitcoin_raw_unsigned(self, *args, loop):
-        result = yield from self._setup_sendbitcoin_test('unsigned', 'raw', loop)
+    def test_sendmartexcoin_raw_unsigned(self, *args, loop):
+        result = yield from self._setup_sendmartexcoin_test('unsigned', 'raw', loop)
 
         self.assertEqual(
             True,
@@ -264,19 +264,19 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(420, len(result))
 
     @helpers.async_test
-    def test_sendbitcoin_raw_broadcast(self, *args, loop):
+    def test_sendmartexcoin_raw_broadcast(self, *args, loop):
         self.loop = loop
         self.set_sign_transaction_mock(True)
         self.set_send_transaction_mock(b'transaction ID')
 
-        result = yield from self._setup_sendbitcoin_test('broadcast', 'raw', loop)
+        result = yield from self._setup_sendmartexcoin_test('broadcast', 'raw', loop)
 
         self.assertEqual(1, self.provider.sign_transaction.call_count)
         self.assertEqual(1, self.provider.send_transaction.call_count)
         self.assertEqual(bitcoin.core.b2lx(b'transaction ID'), result)
 
     @helpers.async_test
-    def test_sendbitcoin_default_fees(self, *args, loop):
+    def test_sendmartexcoin_default_fees(self, *args, loop):
         self.setup_mocks(loop, [
             (80, self.addresses[0].script(), None, 0),
             (50, self.addresses[0].script(), None, 0)
@@ -284,7 +284,7 @@ class ControllerTests(unittest.TestCase):
 
         target = self.create_controller()
 
-        result = yield from target.sendbitcoin(
+        result = yield from target.sendmartexcoin(
             address=self.addresses[0].address,
             amount='100',
             to=self.addresses[2].address,
@@ -307,14 +307,14 @@ class ControllerTests(unittest.TestCase):
         result)
 
     @helpers.async_test
-    def test_sendbitcoin_to_oa_address(self, *args, loop):
+    def test_sendmartexcoin_to_oa_address(self, *args, loop):
         self.setup_mocks(loop, [
             (80, self.addresses[0].script(), None, 0)
         ])
 
         target = self.create_controller()
 
-        result = yield from target.sendbitcoin(
+        result = yield from target.sendmartexcoin(
             address=self.addresses[0].address,
             amount='70',
             to=self.addresses[2].oa_address,
@@ -347,7 +347,7 @@ class ControllerTests(unittest.TestCase):
         yield from helpers.assert_coroutine_raises(
             self,
             colorcore.routing.ControllerError,
-            target.sendbitcoin,
+            target.sendmartexcoin,
             address=self.addresses[0].address,
             amount='100',
             to=self.addresses[2].address,
@@ -355,7 +355,7 @@ class ControllerTests(unittest.TestCase):
             mode='unsigned')
 
     @asyncio.coroutine
-    def _setup_sendbitcoin_test(self, mode, format, loop):
+    def _setup_sendmartexcoin_test(self, mode, format, loop):
         self.setup_mocks(loop, [
             (20, self.addresses[0].script(), self.assets[0].binary, 30),
             (80, self.addresses[0].script(), None, 0),
@@ -364,7 +364,7 @@ class ControllerTests(unittest.TestCase):
 
         target = self.create_controller(format)
 
-        result = yield from target.sendbitcoin(
+        result = yield from target.sendmartexcoin(
             address=self.addresses[0].address,
             amount='100',
             to=self.addresses[2].address,
