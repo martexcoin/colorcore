@@ -102,6 +102,60 @@ class Controller(object):
 
         return table
 
+    def getoabalance(self,
+        address: "Obtain the balance of this address only, or all addresses if unspecified",
+        minconf: "The minimum number of confirmations (inclusive)"='0',
+        maxconf: "The maximum number of confirmations (inclusive)"='9999999'
+    ):
+        """Obtains the balance of the wallet or an address."""
+        from_address = self._as_any_address(address) if address is not None else None
+        unspent_outputs = yield from self._get_unspent_outputs(
+            from_address, min_confirmations=self._as_int(minconf), max_confirmations=self._as_int(maxconf))
+        colored_outputs = [output.output for output in unspent_outputs]
+
+        sorted_outputs = sorted(colored_outputs, key=lambda output: output.script)
+        output_groups = [
+            (script, list(group)) for (script, group)
+            in itertools.groupby(sorted_outputs, lambda output: output.script)]
+
+        if not output_groups and address is not None:
+            output_groups.append((from_address.to_scriptPubKey(), []))
+
+        table = []
+        for script, script_outputs in output_groups:
+            total_value = self.convert.to_coin(sum([item.value for item in script_outputs]))
+
+            address = self.convert.script_to_address(script)
+            if address is not None:
+                oa_address = str(colorcore.addresses.Base58Address(
+                    address, address.nVersion, self.configuration.namespace))
+            else:
+                oa_address = None
+
+            group_details = {
+                'address': self.convert.script_to_display_string(script),
+                'oa_address': oa_address,
+                'value': total_value,
+                'assets': []
+            }
+
+            table.append(group_details)
+
+            sorted_script_outputs = sorted(
+                [item for item in script_outputs if item.asset_id],
+                key=lambda output: output.asset_id)
+
+            for asset_id, outputs in itertools.groupby(sorted_script_outputs, lambda output: output.asset_id):
+                total_quantity = sum([item.asset_quantity for item in outputs])
+                group_details['assets'].append({
+                    'asset_id': self.convert.asset_id_to_base58(asset_id),
+                    'quantity': str(total_quantity)
+                })
+
+        return table
+
+
+
     @asyncio.coroutine
     def listunspent(self,
         address: "Obtain the balance of this address only, or all addresses if unspecified"=None,
