@@ -63,6 +63,26 @@ class Program(object):
             "Colorcore: The Open Assets client for colored coins")
         router.parse(sys.argv[1:])
 
+    @staticmethod
+    def getbalance():
+        parser = configparser.ConfigParser()
+        parser.read('config.ini')
+
+        configuration = Configuration(parser)
+
+        class NetworkParams(bitcoin.core.CoreChainParams):
+            BASE58_PREFIXES = {'PUBKEY_ADDR':configuration.version_byte, 'SCRIPT_ADDR':configuration.p2sh_byte}
+
+        bitcoin.params = NetworkParams()
+        router = Router(
+            colorcore.operations.Controller,
+            sys.stdout,
+            lambda: colorcore.caching.SqliteCache(configuration.cache_path),
+            configuration,
+            asyncio.new_event_loop(),
+            "Colorcore: The Open Assets client for colored coins")
+        balance = router.parse(['getbalance'])
+        return(balance)
 
 class Configuration():
     """Class for managing the Colorcore configuration file."""
