@@ -27,6 +27,7 @@ import bitcoin.core.script
 import contextlib
 import openassets.protocol
 import sqlite3
+import mysql.connector
 
 
 class SqliteCache(openassets.protocol.OutputCache):
@@ -38,7 +39,8 @@ class SqliteCache(openassets.protocol.OutputCache):
 
         :param str path: The path to the database file. Use ':memory:' for an in-memory database.
         """
-        self.connection = sqlite3.connect(path)
+        """self.connection = sqlite3.connect(path)"""
+        self.connection = mysql.connector.Connect(host='localhost',user='openassets',password='openassets',database='openassets')
 
         with contextlib.closing(self.connection.cursor()) as cursor:
             cursor.execute("""
@@ -68,9 +70,8 @@ class SqliteCache(openassets.protocol.OutputCache):
             cursor.execute("""
                   SELECT  Value, Script, AssetID, AssetQuantity, OutputType
                   FROM    Outputs
-                  WHERE   TransactionHash = ? AND OutputIndex = ?
-                """,
-                (transaction_hash, output_index))
+                  WHERE   TransactionHash = %s AND OutputIndex = %s """,
+                  (transaction_hash, output_index))
 
             result = cursor.fetchone()
 
@@ -95,10 +96,10 @@ class SqliteCache(openassets.protocol.OutputCache):
         :param TransactionOutput output: The output to save.
         """
         with contextlib.closing(self.connection.cursor()) as cursor:
-            cursor.execute("""
-                  INSERT OR IGNORE INTO Outputs
+                cursor.execute("""
+                  INSERT IGNORE INTO Outputs
                     (TransactionHash, OutputIndex, Value, Script, AssetID, AssetQuantity, OutputType)
-                  VALUES (?, ?, ?, ?, ?, ?, ?)
+                  VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     transaction_hash,
