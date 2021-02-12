@@ -195,15 +195,15 @@ class Controller(object):
 
     @asyncio.coroutine
     def sendmartexcoin(self,
-        address: "The address to send the bitcoins from",
+        address: "The address to send the martexcoins from",
         amount: "The amount of satoshis to send",
-        to: "The address to send the bitcoins to",
+        to: "The address to send the martexcoins to",
         fees: "The fess in satoshis for the transaction"=None,
         mode: """'broadcast' (default) for signing and broadcasting the transaction,
             'signed' for signing the transaction without broadcasting,
             'unsigned' for getting the raw unsigned transaction without broadcasting"""='broadcast'
     ):
-        """Creates a transaction for sending bitcoins from an address to another."""
+        """Creates a transaction for sending martexcoins from an address to another."""
         from_address = self._as_any_address(address)
         to_address = self._as_any_address(to)
 
@@ -285,9 +285,9 @@ class Controller(object):
             'unsigned' for getting the raw unsigned transaction without broadcasting,
             'preview' (default) for displaying a preview of the transactions"""='preview'
     ):
-        """For every inbound transaction sending bitcoins to 'address', create an outbound transaction sending back
-        to the sender newly issued assets, and send the bitcoins to the forward address. The number of issued coins
-        sent back is proportional to the number of bitcoins sent, and configurable through the ratio argument.
+        """For every inbound transaction sending martexcoins to 'address', create an outbound transaction sending back
+        to the sender newly issued assets, and send the martexcoins to the forward address. The number of issued coins
+        sent back is proportional to the number of martexcoins sent, and configurable through the ratio argument.
         Because the asset issuance transaction is chained from the inbound transaction, double spend is impossible."""
         from_address = self._as_any_address(address)
         to_address = self._as_any_address(forward_address)
